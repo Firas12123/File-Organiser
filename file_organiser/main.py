@@ -9,20 +9,38 @@ file_types = {"Images": [".png",".jpg",".jpeg", ".gif"],
               "Documents": [".pdf", ".docx",".txt",".csv",".doc",".rtf"],
               "Code": [".py",".html",".css",".js"]}
  
+
 target_dir = Path.home() / "Documents" # find the correct files
-for file in target_dir.iterdir():
-    if file.is_file():
-        file_ext = file.suffix.lower()
-        for key, values in file_types.items():
-            for ext in values:
-                if file_ext == ext:
-                    new_path = target_dir / key
-                    if not os.path.exists(new_path):
-                        os.makedirs(new_path)
-                    shutil.move(file, new_path)
-                    
-                    
-                
-                
+
+def scan_file(file):
+    if not file.is_file():
+        return None
+    file_ext = file.suffix.lower()
+    return file_ext
+    
+def get_category(file_ext):     # get the category the file belongs to
+    for category, value in file_types.items():
+        if file_ext in value:
+            return category
+    return None
+
+def move_file(category,file): # create category
+    new_folder = target_dir / category
+    if not os.path.exists(new_folder):   # if folder images/ video etc doesnt exist create one
+        os.makedirs(new_folder)
+    shutil.move(file, new_folder)
+    print(f"{file} has been moved into {new_folder}")
+    
 
     
+for file in target_dir.iterdir():
+    file_ext = scan_file(file)
+    if file_ext:
+        category = get_category(file_ext)
+        if category:
+            move_file(category,file)
+    
+    
+    
+    
+
