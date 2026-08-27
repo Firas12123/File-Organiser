@@ -51,8 +51,10 @@ def get_category(file_ext):  # get the category the file belongs to
     for category, value in file_types.items():
         if file_ext in value:
             return category
-    category = "Other"
-    return category
+    if file.is_file():
+        category = "Other"
+        return category
+    return None
 
 def move_file(category, file):  # create category
     new_folder = target_dir / category
